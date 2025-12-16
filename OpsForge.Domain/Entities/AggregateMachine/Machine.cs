@@ -1,4 +1,5 @@
-﻿using OpsForge.Domain.Entities.AggregateMaintenance;
+﻿using OpsForge.Domain.Entities.AggregateMachine;
+using OpsForge.Domain.Entities.AggregateMaintenance;
 using OpsForge.Domain.Entities.Base;
 using OpsForge.Domain.Enums;
 using OpsForge.Domain.Exceptions;
@@ -6,26 +7,32 @@ using OpsForge.Domain.SeedWork.Interfaces;
 
 namespace OpsForge.Domain.Entities;
 
-public sealed class Machine : BaseEntity, IAggregateRoot
+public class Machine : BaseEntity, IAggregateRoot
 {
     public Guid Code { get; private set; }
     public string Name { get; private set; }
-    public string ProductionLine { get; private set; }
+    public Line ProductionLine { get; private set; }
 
     public Status MachineStatus { get; private set; }
+    public MachineSpecification Specification { get; private set; }
 
     private readonly List<MaintenanceOrder> _maintenances = new();
     public IReadOnlyCollection<MaintenanceOrder> Maintenances => 
         this._maintenances.AsReadOnly();
 
-    public Machine(Guid code, string name, string productionLine)
+    // hashset for manipulating child machine parts
+    private readonly HashSet<string> _parts = new HashSet<string>();
+    public IReadOnlyCollection<string> Parts => this._parts;
+
+    public Machine(Guid code, string name, Line productionLine, MachineSpecification specification)
     {
         if (code == Guid.Empty)
             throw new ArgumentException("Machine's code is required");
 
+        this.Specification = specification;
         this.Code = code;
         this.Name = name ?? throw new ArgumentNullException(nameof(name));
-        this.ProductionLine = productionLine ?? string.Empty;
+        this.ProductionLine = productionLine ?? throw new ArgumentNullException(nameof(productionLine));
 
         this.MachineStatus = Status.Open;
     }
@@ -49,6 +56,30 @@ public sealed class Machine : BaseEntity, IAggregateRoot
         foreach (var order in orders)
         {
             this._maintenances.Add(order);
+        }
+    }
+
+    public void RemovePart(params string[] parts)
+    {
+        foreach (var part in parts)
+        {
+            if (this._parts.Contains(part))
+            {
+                this._parts.Remove(part);
+            }
+        }
+    }
+
+    public void AddPart(params string[] parts)
+    {
+        foreach (var part in parts)
+        {
+            if (string.IsNullOrWhiteSpace(part)) continue;
+
+            if (!this._parts.Contains(part))
+            {
+                this._parts.Add(part);
+            }
         }
     }
 }
