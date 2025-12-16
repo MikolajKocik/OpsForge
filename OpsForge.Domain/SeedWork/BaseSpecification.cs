@@ -13,6 +13,7 @@ namespace OpsForge.Domain.SeedWork;
 /// <typeparam name="T">The type of entity to which the specification applies.</typeparam>
 public abstract class BaseSpecification<T> : ISpecification<T>
 {
+    // where filter
     public BaseSpecification(Expression<Func<T, bool>> criteria)
     {
         this.Criteria = criteria;
