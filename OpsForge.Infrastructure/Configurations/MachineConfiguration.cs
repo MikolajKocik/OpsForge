@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OpsForge.Domain.Entities;
+using OpsForge.Domain.Entities.AggregateMachine.Machines;
 using OpsForge.Domain.Enums;
 using OpsForge.Domain.SeedWork;
 
 namespace OpsForge.Infrastructure.Configurations
 {
-    internal class MachineConfiguration : IEntityTypeConfiguration<Machine>
+    // base configurations for machine aggregate
+    internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
     {
         public void Configure(EntityTypeBuilder<Machine> builder)
         {
@@ -44,6 +46,15 @@ namespace OpsForge.Infrastructure.Configurations
 
             builder.Navigation(m => m.Maintenances)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // machine types (childs)
+            builder.HasDiscriminator<string>("MachineType")
+                .HasValue<Machine>("Base")
+                .HasValue<AutomaticMeldingMachine>("Automatic")
+                .HasValue<CncMillingMachine>("CNC")
+                .HasValue<HydraulicPress>("Hydraulic")
+                .HasValue<InjectionMeldingMachine>("Injection")
+                .HasValue<RoboticAssemblyLine>("Robotic");
         }
     }
 }
