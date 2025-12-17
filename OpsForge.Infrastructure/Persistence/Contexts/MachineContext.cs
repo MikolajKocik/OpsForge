@@ -3,6 +3,7 @@ using OpsForge.Domain.Entities;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Annotations;
 using OpsForge.Infrastructure.Utilities;
+using System.Reflection;
 
 namespace OpsForge.Infrastructure.Persistence.Contexts;
 
@@ -28,7 +29,7 @@ internal sealed class MachineContext : DbContext, IUnitOfWork
 
         modelBuilder.Entity<Machine>().ToTable(ContextUtility.MachineTable);
 
-        //modelBuilder.ApplyConfigurationsFromAssembly();
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)

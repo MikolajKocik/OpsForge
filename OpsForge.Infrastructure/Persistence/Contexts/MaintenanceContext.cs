@@ -3,6 +3,7 @@ using OpsForge.Domain.Entities.AggregateMaintenance;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Annotations;
 using OpsForge.Infrastructure.Utilities;
+using System.Reflection;
 
 namespace OpsForge.Infrastructure.Persistence.Contexts;
 
@@ -32,10 +33,10 @@ internal sealed class MaintenanceContext : DbContext, IUnitOfWork
                .UseHiLo(Hilo.Name)
                .HasField("_id");
 
-            entity.ToTable<MaintenanceOrder>(ContextUtility.MaintenanceTable);
+            entity.ToTable(ContextUtility.MaintenanceTable);
         });
 
-        //modelBuilder.ApplyConfigurationsFromAssembly();
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)

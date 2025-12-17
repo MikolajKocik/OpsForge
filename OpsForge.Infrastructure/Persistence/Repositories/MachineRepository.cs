@@ -5,10 +5,11 @@ using OpsForge.Domain.Entities.AggregateMachine;
 using OpsForge.Domain.Entities.AggregateMachine.Inventory;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Contexts;
+using OpsForge.Infrastructure.Utilities;
 
 namespace OpsForge.Infrastructure.Persistence.Repositories;
 
-internal class MachineRepository : IMachineRepository
+internal sealed class  MachineRepository : IMachineRepository
 {
     private readonly MachineContext _context;
 
@@ -27,28 +28,13 @@ internal class MachineRepository : IMachineRepository
     }
 
     // specification => IQueryable
-    private IQueryable<T> ApplySpecification<T>(IQueryable<T> query, ISpecification<T> spec)
-        where T : class
-    {
-        // includes relations (expressions)
-        IQueryable<T> queryableWithIncludes = spec.Includes
-            .Aggregate(query,
-                (current, include) => current.Include(include));
-
-        // includes relations (nested)
-        IQueryable<T> secondaryResult = spec.IncludeStrings
-            .Aggregate(queryableWithIncludes,
-                (current, include) => current.Include(include));
-
-        return secondaryResult.Where(spec.Criteria);
-    }
 
     private IQueryable<T> GetQueryWithSpecification<T>(ISpecification<T> spec)
         where T : class, IAggregateRoot
     {
         IQueryable<T> queryable = this._context.Set<T>().AsQueryable();
 
-        return ApplySpecification(queryable, spec);
+        return ContextUtility.ApplySpecification(queryable, spec);
     }
 
     public void Add(Machine entity)
@@ -72,7 +58,8 @@ internal class MachineRepository : IMachineRepository
         return await finalQuery.FirstOrDefaultAsync();
     }
 
-    public async Task<Inventory?> GetInventoryByMachineNameAsync(string machineName, CancellationToken cancellationToken = default)
+    public async Task<Inventory?> GetInventoryByMachineNameAsync(
+        string machineName, CancellationToken cancellationToken = default)
     {
         var spec = new MachineWithInventoryPartsSpecification(machineName);
         var machine = await GetBySpecAsync(spec);
