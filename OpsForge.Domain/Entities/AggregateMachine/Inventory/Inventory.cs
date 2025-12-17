@@ -1,11 +1,12 @@
 ﻿using OpsForge.Domain.Entities.AggregateMachine.Machines;
+using OpsForge.Domain.SeedWork;
 
 namespace OpsForge.Domain.Entities.AggregateMachine.Inventory;
 
 /// <summary>
 /// Aggregate inventory stores the whole production parts in warehouse
 /// </summary>
-public sealed class Inventory 
+public sealed class Inventory : ValueObject
 {
     /// <summary>
     /// List of automatic parts
@@ -64,5 +65,14 @@ public sealed class Inventory
                 this._parts.Add(part);
             }
         }
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return this.AutomaticParts;
+        yield return this.CncParts;
+        yield return this.HydraulicParts;
+        yield return this.InjectionParts;
+        yield return this.RoboticParts;
     }
 }
