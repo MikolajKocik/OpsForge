@@ -15,5 +15,4 @@ public interface IRepository<T> where T : IAggregateRoot
     void Delete(T entity);
 
     Task<List<T>> ListAsync(ISpecification<T> spec);
-    Task<T?> GetSingleBySpecAsync(ISpecification<T> spec);
 }

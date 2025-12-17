@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OpsForge.Application.Interfaces.Repositories;
 using OpsForge.Domain.Entities;
+using OpsForge.Domain.Entities.AggregateMachine;
+using OpsForge.Domain.Entities.AggregateMachine.Inventory;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Contexts;
 
@@ -64,9 +66,17 @@ internal class MachineRepository : IMachineRepository
         return await finalQuery.ToListAsync();
     }
 
-    public async Task<Machine?> GetSingleBySpecAsync(ISpecification<Machine> spec)
+    public async Task<Machine?> GetBySpecAsync(ISpecification<Machine> spec)
     {
         var finalQuery = GetQueryWithSpecification(spec);
-        return await finalQuery.SingleOrDefaultAsync();
+        return await finalQuery.FirstOrDefaultAsync();
+    }
+
+    public async Task<Inventory?> GetInventoryByMachineNameAsync(string machineName, CancellationToken cancellationToken = default)
+    {
+        var spec = new MachineWithInventoryPartsSpecification(machineName);
+        var machine = await GetBySpecAsync(spec);
+
+        return machine?.Inventory;
     }
 }
