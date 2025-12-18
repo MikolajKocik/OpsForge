@@ -21,7 +21,8 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
         builder.HasAlternateKey(m => m.Code);
 
         builder.Property(m => m.Name)
-        .IsRequired().HasMaxLength(50);
+            .IsRequired()
+            .HasMaxLength(50);
 
         // config for static enum 'Status'
         builder.Property(m => m.MachineStatus)
@@ -42,14 +43,31 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
         // value objects
         builder.OwnsOne(m => m.Inventory, inventoryBuilder =>
         {
-            // Konfiguracja dla kolekcji wewnątrz obiektu wartości 'Inventory'
-            inventoryBuilder.OwnsMany(i => i.CncParts, ownedBuilder => { ownedBuilder.ToJson(); });
-            inventoryBuilder.OwnsMany(i => i.RoboticParts, ownedBuilder => { ownedBuilder.ToJson(); });
-            inventoryBuilder.OwnsMany(i => i.AutomaticParts, ownedBuilder => { ownedBuilder.ToJson(); });
-            inventoryBuilder.OwnsMany(i => i.HydraulicParts, ownedBuilder => { ownedBuilder.ToJson(); });
-            inventoryBuilder.OwnsMany(i => i.InjectionParts, ownedBuilder => { ownedBuilder.ToJson(); });
+            inventoryBuilder.OwnsMany(i => i.Parts, partBuilder =>
+            {
+                partBuilder.ToJson();
+                partBuilder.Property(p => p.SerialNumber);
+                partBuilder.Property(p => p.Model).IsRequired();
+                partBuilder.Property(p => p.Brand).IsRequired();
+            });
         });
-        builder.OwnsOne(m => m.Specification);
+
+        builder.OwnsOne(m => m.Specification, specBuilder =>
+        {
+            specBuilder.Property("_model").HasColumnName("Model").HasMaxLength(100);
+            specBuilder.Property("_manufacturer").HasColumnName("Manufacturer").HasMaxLength(100);
+            specBuilder.Property("_powerKw").HasColumnName("PowerKw");
+            specBuilder.Property("_voltage").HasColumnName("Voltage");
+            specBuilder.Property("_weightKg").HasColumnName("WeightKg");
+            specBuilder.Property("_material").HasColumnName("Material");
+            specBuilder.Property("_description").HasColumnName("Description").HasMaxLength(100);
+
+            // shadow properties for dimensions
+            specBuilder.Property<double>("_dimensions_Length").HasColumnName("Dimension_Length");
+            specBuilder.Property<double>("_dimensions_Width").HasColumnName("Dimension_Width");
+            specBuilder.Property<double>("_dimensions_Height").HasColumnName("Dimension_Height");
+        });
+
 
         // relation with maintenances
         builder.HasMany(m => m.Maintenances)

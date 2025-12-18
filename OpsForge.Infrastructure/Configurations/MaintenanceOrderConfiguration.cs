@@ -36,19 +36,19 @@ internal sealed class MaintenanceOrderConfiguration : IEntityTypeConfiguration<M
         });
 
         // MaintenanceSchedule as owned value object
-        builder.OwnsOne(mo => mo.Schedule);
-
-        builder.Property(mo => mo.Schedule.Type)
+        builder.OwnsOne(mo => mo.Schedule, scheduleBuilder =>
+        {
+            scheduleBuilder.Property(s => s.Type)
             .HasConversion(
                 mot => mot.Id,
                 id => Enumeration.GetAll<MaintenanceType>()
                     .First(st => st.Id == id))
             .IsRequired();
 
-        builder.Property(mo => mo.Schedule.MaintenanceInterval).IsRequired();
-        builder.Property(mo => mo.Schedule.LastMaintenanceDate).IsRequired();
-
-        builder.Property(mo => mo.Schedule.Notes).HasMaxLength(300);
+            scheduleBuilder.Property(s => s.MaintenanceInterval).IsRequired();
+            scheduleBuilder.Property(s => s.LastMaintenanceDate).IsRequired();
+            scheduleBuilder.Property(s => s.Notes).HasMaxLength(300);
+        });
 
         builder.Navigation(mo => mo.Statuses)
             .UsePropertyAccessMode(PropertyAccessMode.Field);

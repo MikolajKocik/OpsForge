@@ -4,11 +4,13 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines;
 
 public sealed class RoboticAssemblyLine : Machine
 {
-   public SparePart? RobotArmJoint { get; private set; } 
-   public SparePart? ConveyorBelt { get; private set; }
-   public SparePart? VisionSensors { get; private set; } 
-   public SparePart? PneumaticGrippers { get; private set; } 
-   public SparePart? PLCHMIController { get; private set; }
+    public SparePart? RobotArmJoint { get; private set; }
+    public SparePart? ConveyorBelt { get; private set; }
+    public SparePart? VisionSensors { get; private set; }
+    public SparePart? PneumaticGrippers { get; private set; }
+    public SparePart? PLCHMIController { get; private set; }
+
+    public RoboticAssemblyLine() { }
 
     public RoboticAssemblyLine(
         Line productionLine,
@@ -18,13 +20,13 @@ public sealed class RoboticAssemblyLine : Machine
         SparePart? visionSensors = null,
         SparePart? pneumaticGrippers = null,
         SparePart? plchmiController = null
-        ) : base(nameof(RoboticAssemblyLine), productionLine, specification) 
+        ) : base(nameof(RoboticAssemblyLine), productionLine, specification)
     {
         this.RobotArmJoint = robotArmJoint;
         this.ConveyorBelt = conveyorBelt;
         this.VisionSensors = visionSensors;
         this.PneumaticGrippers = pneumaticGrippers;
-        this.PLCHMIController = plchmiController;   
+        this.PLCHMIController = plchmiController;
     }
 
     public enum RoboticPart

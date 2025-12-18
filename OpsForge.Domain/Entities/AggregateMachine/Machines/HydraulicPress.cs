@@ -9,6 +9,8 @@ public sealed class HydraulicPress : Machine
     public SparePart? HydraulicOilTank { get; private set; }
     public SparePart? ProportionalValves { get; private set; }
 
+    public HydraulicPress() { }
+
     public HydraulicPress(
         Line productionLine,
         MachineSpecification specification,

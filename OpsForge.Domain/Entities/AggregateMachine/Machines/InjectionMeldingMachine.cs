@@ -16,6 +16,8 @@ public sealed class InjectionMeldingMachine : Machine
     public SparePart? ClampingUnit { get; private set; } 
     public SparePart? MaterialHopperDryer { get; private set; }
 
+    public InjectionMeldingMachine() { }
+
     public InjectionMeldingMachine(
         string name,
         Line productionLine,

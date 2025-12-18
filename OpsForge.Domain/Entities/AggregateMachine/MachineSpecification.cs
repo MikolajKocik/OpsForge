@@ -4,14 +4,35 @@ namespace OpsForge.Domain.Entities.AggregateMachine;
 
 public sealed class MachineSpecification : ValueObject
 {
-    public string Model { get; }
-    public string Manufacturer { get; }
-    public double PowerKw { get; }    
-    public double Voltage { get; }       
-    public double WeightKg { get; }       
-    public Dimensions Dimensions { get; }  
-    public string Material { get; }       
-    public string Description { get; }
+    private string _model;
+    private string _manufacturer;
+    private double _powerKw;
+    private double _voltage;
+    private double _weightKg;
+    private string _material;
+    private string _description;
+
+    // shadow properties for dimensions
+    private double _dimensions_Length;
+    private double _dimensions_Width;
+    private double _dimensions_Height;
+
+    public string Model => this._model;
+    public string Manufacturer => this._manufacturer;
+    public double PowerKw => this._powerKw;
+    public double Voltage => this._voltage;
+    public double WeightKg => this._weightKg;
+    public string Material => this._material;
+    public string Description => this._description;
+    public Dimensions Dimensions => 
+        new Dimensions(
+            this._dimensions_Length,
+            this._dimensions_Width,
+            this._dimensions_Height
+        );
+
+
+    private MachineSpecification() { }
 
     public MachineSpecification(
         string model,
@@ -43,25 +64,28 @@ public sealed class MachineSpecification : ValueObject
             throw new ArgumentException("Dimensions must be positive");
 
 
-        Model = model;
-        Manufacturer = manufacturer;
-        PowerKw = powerKw;
-        Voltage = voltage;
-        WeightKg = weightKg;
-        Dimensions = dimensions;
-        Material = material;
-        Description = description;
+        this._model = model;
+        this._manufacturer = manufacturer;
+        this._powerKw = powerKw;
+        this._voltage = voltage;
+        this._weightKg = weightKg;
+        this._material = material;
+        this._description = description;
+
+
+        this._dimensions_Length = dimensions.Length;
+        this._dimensions_Width = dimensions.Width;
+        this._dimensions_Height = dimensions.Height;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Model;
-        yield return Manufacturer;
-        yield return PowerKw;
-        yield return Voltage;
-        yield return WeightKg;
-        yield return Dimensions;
-        yield return Material;
+        yield return this._model;
+        yield return this._manufacturer;
+        yield return this._powerKw;
+        yield return this._voltage;
+        yield return this._weightKg;
+        yield return this._material;
     }
 }
 

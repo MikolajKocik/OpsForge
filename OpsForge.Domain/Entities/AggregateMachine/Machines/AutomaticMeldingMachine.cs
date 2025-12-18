@@ -15,7 +15,9 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines
         public SparePart? CoolingSystem { get; private set; } 
         public SparePart? ToolChanger { get; private set; } 
         public SparePart? PLC { get; private set; }
-        public SparePart? HMI { get; private set; } 
+        public SparePart? HMI { get; private set; }
+
+        public AutomaticMeldingMachine() { }
 
         public AutomaticMeldingMachine(
             string name,

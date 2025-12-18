@@ -14,6 +14,8 @@ public sealed class MaintenanceOrder : BaseEntity, IAggregateRoot
 
     public MaintenanceSchedule Schedule { get; private set; }
 
+    public MaintenanceOrder() { }
+
     public MaintenanceOrder(int machineId, MaintenanceSchedule schedule)
     {
         this.MachineId = machineId;

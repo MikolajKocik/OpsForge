@@ -10,6 +10,8 @@ public sealed class CncMillingMachine : Machine
     public SparePart? LinearGuides { get; private set; }
     public SparePart? CoolantPump { get; private set; }
 
+    public CncMillingMachine() { }
+
     public CncMillingMachine(
         Line productionLine,
         MachineSpecification specification,
