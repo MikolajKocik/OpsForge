@@ -3,6 +3,7 @@ using OpsForge.Domain.Entities.AggregateMaintenance;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Annotations;
 using OpsForge.Infrastructure.Utilities;
+using System.Reflection;
 
 namespace OpsForge.Infrastructure.Persistence.Contexts;
 
@@ -32,12 +33,19 @@ internal sealed class MaintenanceContext : DbContext, IUnitOfWork
                .UseHiLo(Hilo.Name)
                .HasField("_id");
 
-            entity.ToTable<MaintenanceOrder>(ContextUtility.MaintenanceTable);
+            entity.ToTable(ContextUtility.MaintenanceTable);
         });
 
-        //modelBuilder.ApplyConfigurationsFromAssembly();
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
+    /// <summary>
+    /// Asynchronously saves all changes made in this context to the underlying database.
+    /// </summary>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete. The default value is <see
+    /// cref="CancellationToken.None"/>.</param>
+    /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries
+    /// written to the database.</returns>
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
     {
         return await base.SaveChangesAsync(cancellationToken);

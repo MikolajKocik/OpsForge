@@ -8,17 +8,20 @@ public sealed class MaintenanceOrder : BaseEntity, IAggregateRoot
 {
     private List<Status> _statuses = new();
     public IReadOnlyCollection<Status> Statuses
-        => _statuses.AsReadOnly();
+        => this._statuses.AsReadOnly();
 
     public int MachineId { get; }
 
-    public MaintenanceOrder(int machineId)
+    public MaintenanceSchedule Schedule { get; private set; }
+
+    public MaintenanceOrder(int machineId, MaintenanceSchedule schedule)
     {
-        MachineId = machineId;
+        this.MachineId = machineId;
+        this.Schedule = schedule;
     }
 
     public void AddMaintenanceOrderStatus(Status status)
     {
-        _statuses.Add(status);
+        this._statuses.Add(status);
     }
 }

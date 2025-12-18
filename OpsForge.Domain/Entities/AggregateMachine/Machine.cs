@@ -1,4 +1,6 @@
-﻿using OpsForge.Domain.Entities.AggregateMaintenance;
+﻿using OpsForge.Domain.Entities.AggregateMachine;
+using OpsForge.Domain.Entities.AggregateMachine.Inventory;
+using OpsForge.Domain.Entities.AggregateMaintenance;
 using OpsForge.Domain.Entities.Base;
 using OpsForge.Domain.Enums;
 using OpsForge.Domain.Exceptions;
@@ -6,28 +8,29 @@ using OpsForge.Domain.SeedWork.Interfaces;
 
 namespace OpsForge.Domain.Entities;
 
-public sealed class Machine : BaseEntity, IAggregateRoot
+public class Machine : BaseEntity, IAggregateRoot
 {
     public Guid Code { get; private set; }
     public string Name { get; private set; }
-    public string ProductionLine { get; private set; }
+    public Line ProductionLine { get; private set; }
+    public Inventory Inventory { get; private set; }
 
     public Status MachineStatus { get; private set; }
+    public MachineSpecification Specification { get; private set; }
 
     private readonly List<MaintenanceOrder> _maintenances = new();
     public IReadOnlyCollection<MaintenanceOrder> Maintenances => 
         this._maintenances.AsReadOnly();
 
-    public Machine(Guid code, string name, string productionLine)
+    public Machine(string name, Line productionLine, MachineSpecification specification)
     {
-        if (code == Guid.Empty)
-            throw new ArgumentException("Machine's code is required");
-
-        this.Code = code;
+        this.Specification = specification;
+        this.Code = Guid.NewGuid();
         this.Name = name ?? throw new ArgumentNullException(nameof(name));
-        this.ProductionLine = productionLine ?? string.Empty;
+        this.ProductionLine = productionLine ?? throw new ArgumentNullException(nameof(productionLine));
 
         this.MachineStatus = Status.Open;
+        this.Inventory = new Inventory();
     }
 
     public void SetStatus(Status newStatus)

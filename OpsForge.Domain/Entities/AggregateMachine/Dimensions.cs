@@ -14,8 +14,8 @@ public readonly struct Dimensions
         double height
         )
     {
-        Length = length;
-        Width = width;
-        Height = height;
+        this.Length = length;
+        this.Width = width;
+        this.Height = height;
     }
 }
