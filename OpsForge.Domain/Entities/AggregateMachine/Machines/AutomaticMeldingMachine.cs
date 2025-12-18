@@ -5,24 +5,45 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines
 {
     public sealed class AutomaticMeldingMachine : Machine
     {
-        public string ControlUnit { get; private set; } = string.Empty;
-        public string ConveyorSystem { get; private set; } = string.Empty;
-        public string Sensors { get; private set; } = string.Empty;
-        public string Actuators { get; private set; } = string.Empty;
-        public string SafetyGuards { get; private set; } = string.Empty;
+        public SparePart? ControlUnit { get; private set; } 
+        public SparePart? ConveyorSystem { get; private set; } 
+        public SparePart? Sensors { get; private set; } 
+        public SparePart? Actuators { get; private set; } 
+        public SparePart? SafetyGuards { get; private set; } 
 
-        public string WeldingHead { get; private set; } = string.Empty;
-        public string CoolingSystem { get; private set; } = string.Empty;
-        public string ToolChanger { get; private set; } = string.Empty;
-        public string PLC { get; private set; } = string.Empty;
-        public string HMI { get; private set; } = string.Empty;
+        public SparePart? WeldingHead { get; private set; } 
+        public SparePart? CoolingSystem { get; private set; } 
+        public SparePart? ToolChanger { get; private set; } 
+        public SparePart? PLC { get; private set; }
+        public SparePart? HMI { get; private set; } 
 
         public AutomaticMeldingMachine(
-            Guid code,
             string name,
             Line productionLine,
-            MachineSpecification specification
-            ) : base(code, nameof(AutomaticMeldingMachine), productionLine, specification) { }
+            MachineSpecification specification,
+            SparePart? controlUnit = null,
+            SparePart? conveyorSystem = null,
+            SparePart? sensors = null,
+            SparePart? actuators = null,
+            SparePart? safetyGuards = null,
+            SparePart? weldingHead = null,
+            SparePart? coolingSystem = null,
+            SparePart? toolChanger = null,
+            SparePart? plc = null,
+            SparePart? hmi = null
+            ) : base(nameof(AutomaticMeldingMachine), productionLine, specification) 
+        {
+            this.ControlUnit = controlUnit;
+            this.ConveyorSystem = conveyorSystem;
+            this.Sensors = sensors;
+            this.Actuators = actuators;
+            this.SafetyGuards = safetyGuards;
+            this.WeldingHead = weldingHead;
+            this.CoolingSystem = coolingSystem;
+            this.ToolChanger = toolChanger;
+            this.PLC = plc;
+            this.HMI = hmi;
+        }
 
         public enum AutomaticPart
         {
@@ -38,43 +59,22 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines
             HMI
         }
 
-        public void ReplacePart(AutomaticPart partType, string newPartName)
+        public void ReplacePart(AutomaticPart partType, SparePart newPartName)
         {
-            switch (partType)
+            _ = partType switch
             {
-                case AutomaticPart.ControlUnit:
-                    ControlUnit = newPartName;
-                    break;
-                case AutomaticPart.ConveyorSystem:
-                    ConveyorSystem = newPartName;
-                    break;
-                case AutomaticPart.Sensors:
-                    Sensors = newPartName;
-                    break;
-                case AutomaticPart.Actuators:
-                    Actuators = newPartName;
-                    break;
-                case AutomaticPart.SafetyGuards:
-                    SafetyGuards = newPartName;
-                    break;
-                case AutomaticPart.WeldingHead:
-                    WeldingHead = newPartName;
-                    break;
-                case AutomaticPart.CoolingSystem:
-                    CoolingSystem = newPartName;
-                    break;
-                case AutomaticPart.ToolChanger:
-                    ToolChanger = newPartName;
-                    break;
-                case AutomaticPart.PLC:
-                    PLC = newPartName;
-                    break;
-                case AutomaticPart.HMI:
-                    HMI = newPartName;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(partType), $"Undefined part type: {partType}.");
-            }
+                AutomaticPart.ControlUnit => this.ControlUnit = newPartName,
+                AutomaticPart.ConveyorSystem => this.ConveyorSystem = newPartName,
+                AutomaticPart.Sensors => this.Sensors = newPartName,
+                AutomaticPart.Actuators => this.Actuators = newPartName,
+                AutomaticPart.SafetyGuards => this.SafetyGuards = newPartName,
+                AutomaticPart.WeldingHead => this.WeldingHead = newPartName,
+                AutomaticPart.CoolingSystem => this.CoolingSystem = newPartName,
+                AutomaticPart.ToolChanger => this.ToolChanger = newPartName,
+                AutomaticPart.PLC => this.PLC = newPartName,
+                AutomaticPart.HMI => this.HMI = newPartName,
+                _ => throw new ArgumentOutOfRangeException(nameof(partType))
+            };
         }
     }
 }

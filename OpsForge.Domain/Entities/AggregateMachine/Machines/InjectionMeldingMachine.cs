@@ -4,24 +4,45 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines;
 
 public sealed class InjectionMeldingMachine : Machine
 {
-    public string PowerSourceWelder { get; private set; } = string.Empty;
-    public string WeldingTorch { get; private set; } = string.Empty;
-    public string WireFeeder { get; private set; } = string.Empty;
-    public string FumeExtractionSystem { get; private set; } = string.Empty;
-    public string PositionerTable { get; private set; } = string.Empty;
+    public SparePart? PowerSourceWelder { get; private set; } 
+    public SparePart? WeldingTorch { get; private set; } 
+    public SparePart? WireFeeder { get; private set; } 
+    public SparePart? FumeExtractionSystem { get; private set; } 
+    public SparePart? PositionerTable { get; private set; } 
 
-    public string InjectionUnit { get; private set; } = string.Empty;
-    public string HydraulicPump { get; private set; } = string.Empty;
-    public string InjectionMold { get; private set; } = string.Empty;
-    public string ClampingUnit { get; private set; } = string.Empty;
-    public string MaterialHopperDryer { get; private set; } = string.Empty;
+    public SparePart? InjectionUnit { get; private set; } 
+    public SparePart? HydraulicPump { get; private set; } 
+    public SparePart? InjectionMold { get; private set; } 
+    public SparePart? ClampingUnit { get; private set; } 
+    public SparePart? MaterialHopperDryer { get; private set; }
 
     public InjectionMeldingMachine(
-        Guid code,
         string name,
         Line productionLine,
-        MachineSpecification specification
-        ) : base(code, nameof(InjectionMeldingMachine), productionLine, specification) { }
+        MachineSpecification specification,
+        SparePart? powerSourceWelder = null,
+        SparePart? weldingTorch = null,
+        SparePart? wireFeeder = null,
+        SparePart? fumeExtractionSystem = null,
+        SparePart? positionerTable = null,
+        SparePart? injectionUnit = null,
+        SparePart? hydraulicPump = null,
+        SparePart? injectionMold = null,
+        SparePart? clampingUnit = null,
+        SparePart? materialHopperDryer = null
+        ) : base(nameof(InjectionMeldingMachine), productionLine, specification) 
+    {
+        this.PowerSourceWelder = powerSourceWelder;
+        this.WeldingTorch = weldingTorch;
+        this.WireFeeder = wireFeeder;
+        this.FumeExtractionSystem = fumeExtractionSystem;
+        this.PositionerTable = positionerTable;
+        this.InjectionUnit = injectionUnit;
+        this.HydraulicPump = hydraulicPump;
+        this.InjectionMold = injectionMold;
+        this.ClampingUnit = clampingUnit;
+        this.MaterialHopperDryer = materialHopperDryer;
+    }
 
     public enum InjectionPart
     {
@@ -37,42 +58,21 @@ public sealed class InjectionMeldingMachine : Machine
         MaterialHopperDryer
     }
 
-    public void ReplacePart(InjectionPart partType, string newPartName)
+    public void ReplacePart(InjectionPart partType, SparePart? newPartName)
     {
-        switch (partType)
+        _ = partType switch
         {
-            case InjectionPart.PowerSourceWelder:
-                PowerSourceWelder = newPartName;
-                break;
-            case InjectionPart.WeldingTorch:
-                WeldingTorch = newPartName;
-                break;
-            case InjectionPart.WireFeeder:
-                WireFeeder = newPartName;
-                break;
-            case InjectionPart.FumeExtractionSystem:
-                FumeExtractionSystem = newPartName;
-                break;
-            case InjectionPart.PositionerTable:
-                PositionerTable = newPartName;
-                break;
-            case InjectionPart.InjectionUnit:
-                InjectionUnit = newPartName;
-                break;
-            case InjectionPart.HydraulicPump:
-                HydraulicPump = newPartName;
-                break;
-            case InjectionPart.InjectionMold:
-                InjectionMold = newPartName;
-                break;
-            case InjectionPart.ClampingUnit:
-                ClampingUnit = newPartName;
-                break;
-            case InjectionPart.MaterialHopperDryer:
-                MaterialHopperDryer = newPartName;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(partType), $"Undefined part type: {partType}.");
-        }
+            InjectionPart.PowerSourceWelder => this.PowerSourceWelder = newPartName,
+            InjectionPart.WeldingTorch => this.WeldingTorch = newPartName,
+            InjectionPart.WireFeeder => this.WireFeeder = newPartName,
+            InjectionPart.FumeExtractionSystem => this.FumeExtractionSystem = newPartName,
+            InjectionPart.PositionerTable => this.PositionerTable = newPartName,
+            InjectionPart.InjectionUnit => this.InjectionUnit = newPartName,
+            InjectionPart.HydraulicPump => this.HydraulicPump = newPartName,
+            InjectionPart.InjectionMold => this.InjectionMold = newPartName,
+            InjectionPart.ClampingUnit => this.ClampingUnit = newPartName,
+            InjectionPart.MaterialHopperDryer => this.MaterialHopperDryer = newPartName,
+            _ => throw new ArgumentOutOfRangeException(nameof(newPartName))
+        };
     }
 }

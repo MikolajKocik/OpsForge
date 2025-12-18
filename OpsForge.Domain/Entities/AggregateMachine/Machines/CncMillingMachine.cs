@@ -4,17 +4,28 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines;
 
 public sealed class CncMillingMachine : Machine
 {
-    public string MainSpindle { get; private set; } = string.Empty;
-    public string BallScrews { get; private set; } = string.Empty;
-    public string ToolMagazine { get; private set; } = string.Empty;
-    public string LinearGuides { get; private set; } = string.Empty;
-    public string CoolantPump { get; private set; } = string.Empty;
+    public SparePart? MainSpindle { get; private set; }
+    public SparePart? BallScrews { get; private set; }
+    public SparePart? ToolMagazine { get; private set; }
+    public SparePart? LinearGuides { get; private set; }
+    public SparePart? CoolantPump { get; private set; }
 
     public CncMillingMachine(
-        Guid code,
         Line productionLine,
-        MachineSpecification specification
-        ) : base(code, nameof(CncMillingMachine), productionLine, specification) { }
+        MachineSpecification specification,
+        SparePart? mainSpindle = null,
+        SparePart? ballScrews = null,
+        SparePart? toolMagazine = null,
+        SparePart? linearGuides = null,
+        SparePart? coolantPump = null
+        ) : base(nameof(CncMillingMachine), productionLine, specification)
+    {
+        this.MainSpindle = mainSpindle;
+        this.BallScrews = ballScrews;
+        this.ToolMagazine = toolMagazine;
+        this.LinearGuides = linearGuides;
+        this.CoolantPump = coolantPump;
+    }
 
     public enum CncPartType
     {
@@ -25,34 +36,16 @@ public sealed class CncMillingMachine : Machine
         CoolantPump,
     }
 
-    public void ReplacePart(CncPartType partType, string newPartName)
+    public void ReplacePart(CncPartType partType, SparePart newPartName)
     {
-        switch (partType)
+        _ = partType switch
         {
-            case CncPartType.MainSpindle:
-                this.MainSpindle = newPartName;
-                break;
-
-            case CncPartType.BallScrews:
-                this.BallScrews = newPartName;
-                break;
-
-            case CncPartType.ToolMagazine:
-                this.ToolMagazine = newPartName;
-                break;
-
-            case CncPartType.LinearGuides:
-                this.LinearGuides = newPartName;
-                break;
-
-            case CncPartType.CoolantPump:
-                this.CoolantPump = newPartName;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(partType),
-                    $"Undefined part type: {partType}.");
-        }
+            CncPartType.MainSpindle => this.MainSpindle = newPartName,
+            CncPartType.BallScrews => this.BallScrews = newPartName,
+            CncPartType.ToolMagazine => this.ToolMagazine = newPartName,
+            CncPartType.LinearGuides => this.LinearGuides = newPartName,
+            CncPartType.CoolantPump => this.CoolantPump = newPartName,
+            _ => throw new ArgumentOutOfRangeException(nameof(newPartName))
+        };
     }
 }
-   

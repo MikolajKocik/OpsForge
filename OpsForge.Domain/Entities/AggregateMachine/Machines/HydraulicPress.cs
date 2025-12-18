@@ -4,16 +4,25 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines;
 
 public sealed class HydraulicPress : Machine
 {
-    public string HydraulicPump { get; private set; } = string.Empty;
-    public string HydraulicCylinder { get; private set; } = string.Empty;
-    public string HydraulicOilTank { get; private set; } = string.Empty;
-    public string ProportionalValves { get; private set; } = string.Empty;
+    public SparePart? HydraulicPump { get; private set; } 
+    public SparePart? HydraulicCylinder { get; private set; } 
+    public SparePart? HydraulicOilTank { get; private set; }
+    public SparePart? ProportionalValves { get; private set; }
 
     public HydraulicPress(
-        Guid code,
         Line productionLine,
-        MachineSpecification specification
-        ) : base(code, nameof(HydraulicPress), productionLine, specification) { }
+        MachineSpecification specification,
+        SparePart? hydraulicPump = null,
+        SparePart? hydraulicCylinder = null,
+        SparePart? hydraulicOilTank = null,
+        SparePart? proportionalValves = null
+        ) : base(nameof(HydraulicPress), productionLine, specification) 
+    {
+        this.HydraulicPump = hydraulicPump;
+        this.HydraulicCylinder = hydraulicCylinder;
+        this.HydraulicOilTank = hydraulicOilTank;
+        this.ProportionalValves = proportionalValves;
+    }
 
     public enum HydrauliPartType
     {
@@ -23,29 +32,15 @@ public sealed class HydraulicPress : Machine
         ProportionalValves
     }
 
-    public void ReplacePart(HydrauliPartType partType, string newPartName)
+    public void ReplacePart(HydrauliPartType partType, SparePart newPartName)
     {
-        switch (partType)
+        _ = partType switch
         {
-            case HydrauliPartType.HydraulicPump:
-                this.HydraulicPump = newPartName;
-                break;
-
-            case HydrauliPartType.HydraulicCylinder:
-                this.HydraulicCylinder = newPartName;
-                break;
-
-            case HydrauliPartType.HydraulicOilTank:
-                this.HydraulicOilTank = newPartName;
-                break;
-
-            case HydrauliPartType.ProportionalValves:
-                this.ProportionalValves = newPartName;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(partType),
-                    $"Undefined part type: {partType}.");
-        }
+            HydrauliPartType.HydraulicPump => this.HydraulicPump = newPartName,
+            HydrauliPartType.HydraulicCylinder => this.HydraulicCylinder = newPartName,
+            HydrauliPartType.HydraulicOilTank => this.HydraulicOilTank = newPartName,
+            HydrauliPartType.ProportionalValves => this.ProportionalValves = newPartName,
+            _ => throw new ArgumentOutOfRangeException(nameof(newPartName))
+        };
     }
 }

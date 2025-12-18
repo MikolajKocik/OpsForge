@@ -22,13 +22,10 @@ public class Machine : BaseEntity, IAggregateRoot
     public IReadOnlyCollection<MaintenanceOrder> Maintenances => 
         this._maintenances.AsReadOnly();
 
-    public Machine(Guid code, string name, Line productionLine, MachineSpecification specification)
+    public Machine(string name, Line productionLine, MachineSpecification specification)
     {
-        if (code == Guid.Empty)
-            throw new ArgumentException("Machine's code is required");
-
         this.Specification = specification;
-        this.Code = code;
+        this.Code = Guid.NewGuid();
         this.Name = name ?? throw new ArgumentNullException(nameof(name));
         this.ProductionLine = productionLine ?? throw new ArgumentNullException(nameof(productionLine));
 
