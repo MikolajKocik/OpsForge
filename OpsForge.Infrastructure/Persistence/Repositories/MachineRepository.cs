@@ -66,4 +66,30 @@ internal sealed class  MachineRepository : IMachineRepository
 
         return machine?.Inventory;
     }
+
+    public async Task<Machine?> GetMachineById(int id, CancellationToken cancellationToken)
+    {
+
+        Machine? machine = await this._context.Machines.FindAsync(id, cancellationToken);
+        return machine;
+    }
+        
+  
+    /// <summary>
+    /// Updates the specified shadow property of a machine entity to the current UTC date and time, and saves the change
+    /// to the database.
+    /// </summary>
+    /// <remarks>This method sets the value of the specified shadow property to <see cref="DateTime.UtcNow"/>
+    /// and persists the change asynchronously. The shadow property must be configured in the entity model; otherwise,
+    /// an exception may be thrown.</remarks>
+    /// <param name="machine">The <see cref="Machine"/> entity whose shadow property will be updated. Must not be <c>null</c>.</param>
+    /// <param name="shadowPropName">The name of the shadow property to update. Must correspond to a valid property defined in the entity model.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns></returns>
+    public async Task UpdateDateOfReplaceSparePart(Machine machine, string shadowPropName,
+        CancellationToken cancellationToken)
+    {
+        this._context.Entry(machine).Property(shadowPropName).CurrentValue = DateTime.UtcNow;
+        await this._context.SaveChangesAsync(cancellationToken);
+    }
 }

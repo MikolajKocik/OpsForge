@@ -7,7 +7,12 @@ using OpsForge.Domain.SeedWork;
 
 namespace OpsForge.Infrastructure.Configurations
 {
-    // base configurations for machine aggregate
+    /// <summary>
+    /// Provides the Entity Framework Core configuration for the <see cref="Machine"/> entity.
+    /// </summary>
+    /// <remarks>This configuration defines the entity's keys, property constraints, value object ownership,
+    /// relationships, and discriminator mapping for derived machine types. It is intended for use with the Entity
+    /// Framework Core model builder and is not intended to be used directly in application code.</remarks>
     internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
     {
         public void Configure(EntityTypeBuilder<Machine> builder)
@@ -45,6 +50,22 @@ namespace OpsForge.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(m => m.Maintenances)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // value object private fields accessibility
+            builder.Navigation(m => m.Inventory.CncParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.RoboticParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.AutomaticParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.HydraulicParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.InjectionParts)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             // machine types (childs)
