@@ -14,4 +14,20 @@
     <Folder Include="wwwroot\lib\jquery\dist\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpsForge.Application\OpsForge.Application.csproj" />
+    <ProjectReference Include="..\OpsForge.Domain\OpsForge.Domain.csproj" />
+    <ProjectReference Include="..\OpsForge.Infrastructure\OpsForge.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

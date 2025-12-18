@@ -14,7 +14,7 @@ namespace OpsForge.Pages
 
         public void OnGet()
         {
-
+            ViewData["ShowHeader"] = false;
         }
     }
 }

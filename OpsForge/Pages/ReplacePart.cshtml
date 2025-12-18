@@ -1,0 +1,50 @@
+﻿@page
+@model OpsForge.Web.Pages.ReplacePartModel
+@{
+}
+
+<h2>Replace parts in the machine #@this.Model.MachineId</h2>    
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form method="post" class="card p-4 shadow-sm">
+    <input type="hidden" asp-for="MachineId" />
+
+    <div class="mb-3">
+        <label class="form-label">Choose the part to replace:</label>
+        <select asp-for="@this.Model.SelectedPartType" class="form-select">
+            @foreach (var part in this.Model.AvailablePartTypes)
+            {
+                <option value="@part">@part</option>
+            }
+        </select>
+        <span asp-validation-for="@this.Model.SelectedPartType" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <h5>New part data:</h5>
+
+    <div class="mb-3">
+        <label class="form-label">Brand:</label>
+        <input asp-for="@this.Model.NewPart.Brand" class="form-control" placeholder="etc. Siemens" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Model:</label>
+        <input asp-for="@this.Model.NewPart.Model" class="form-control" placeholder=". S7-1200" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Serial number:</label>
+        <input asp-for="@this.Model.NewPart.SerialNumber" class="form-control" />
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Confirm replacement</button>
+        <a asp-page="./Details" asp-route-id="@this.Model.MachineId" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
