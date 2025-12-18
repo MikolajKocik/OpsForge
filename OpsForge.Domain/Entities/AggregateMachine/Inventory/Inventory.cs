@@ -1,5 +1,6 @@
 ﻿using OpsForge.Domain.Entities.AggregateMachine.Machines;
 using OpsForge.Domain.SeedWork;
+using System.Collections.Generic;
 
 namespace OpsForge.Domain.Entities.AggregateMachine.Inventory;
 
@@ -11,32 +12,32 @@ public sealed class Inventory : ValueObject
     /// <summary>
     /// List of automatic parts
     /// </summary>
-    private List<AutomaticMeldingMachine> _automaticParts { get; } = new();
-    public IReadOnlyCollection<AutomaticMeldingMachine> AutomaticParts => _automaticParts.AsReadOnly();
+    private readonly List<AutomaticMeldingMachine> _automaticParts = new();
+    public IReadOnlyCollection<AutomaticMeldingMachine> AutomaticParts => this._automaticParts.AsReadOnly();
 
     /// <summary>
     /// List of cnc parts
     /// </summary>
-    private List<CncMillingMachine> _cncParts { get; } = new();
-    public IReadOnlyCollection<CncMillingMachine> CncParts => _cncParts.AsReadOnly();
+    private readonly List<CncMillingMachine> _cncParts = new();
+    public IReadOnlyCollection<CncMillingMachine> CncParts => this._cncParts.AsReadOnly();
 
     /// <summary>
     /// List of hydraulic parts
     /// </summary>
-    private List<HydraulicPress> _hydraulicParts { get; } = new();
-    public IReadOnlyCollection<HydraulicPress> HydraulicParts => _hydraulicParts.AsReadOnly();
+    private readonly List<HydraulicPress> _hydraulicParts = new();
+    public IReadOnlyCollection<HydraulicPress> HydraulicParts => this._hydraulicParts.AsReadOnly();
 
     /// <summary>
     /// List of injection parts
     /// </summary>
-    public List<InjectionMeldingMachine> _injectionParts { get; } = new();
-    public IReadOnlyCollection<InjectionMeldingMachine> InjectionParts => _injectionParts.AsReadOnly();
+    private readonly List<InjectionMeldingMachine> _injectionParts = new();
+    public IReadOnlyCollection<InjectionMeldingMachine> InjectionParts => this._injectionParts.AsReadOnly();
 
     /// <summary>
     /// List of robotic parts
     /// </summary>
-    private List<RoboticAssemblyLine> _roboticParts { get; } = new();
-    public IReadOnlyCollection<RoboticAssemblyLine> RoboticParts => _roboticParts.AsReadOnly();
+    private readonly List<RoboticAssemblyLine> _roboticParts = new();
+    public IReadOnlyCollection<RoboticAssemblyLine> RoboticParts => this._roboticParts.AsReadOnly();
 
 
     // hashset for manipulating child machine parts

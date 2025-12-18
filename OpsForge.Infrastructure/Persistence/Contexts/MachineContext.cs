@@ -9,11 +9,11 @@ using System.Reflection;
 
 namespace OpsForge.Infrastructure.Persistence.Contexts;
 
-internal sealed class MachineContext : DbContext, IUnitOfWork
+public sealed class MachineContext : DbContext, IUnitOfWork
 {
     internal DbSet<Machine> Machines { get; set; }
 
-    internal MachineContext(DbContextOptions<MachineContext> options)
+    public MachineContext(DbContextOptions<MachineContext> options)
         : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

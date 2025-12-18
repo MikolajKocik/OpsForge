@@ -7,11 +7,11 @@ using System.Reflection;
 
 namespace OpsForge.Infrastructure.Persistence.Contexts;
 
-internal sealed class MaintenanceContext : DbContext, IUnitOfWork
+public sealed class MaintenanceContext : DbContext, IUnitOfWork
 {
     internal DbSet<MaintenanceOrder> Maintenances { get; set; }
 
-    internal MaintenanceContext(DbContextOptions<MaintenanceContext> options) 
+    public MaintenanceContext(DbContextOptions<MaintenanceContext> options) 
         : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

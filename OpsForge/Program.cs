@@ -1,3 +1,4 @@
+using OpsForge.Application.CQRS;
 using OpsForge.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
 
 var app = builder.Build();
 

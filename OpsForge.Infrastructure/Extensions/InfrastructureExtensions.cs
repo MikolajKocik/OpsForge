@@ -1,10 +1,7 @@
-﻿using EFCoreSecondLevelCacheInterceptor;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpsForge.Application.Interfaces.Repositories;
 using OpsForge.Infrastructure.Extensions.DbContext;
-using OpsForge.Infrastructure.Persistence.Contexts;
 using OpsForge.Infrastructure.Persistence.Repositories;
 
 namespace OpsForge.Infrastructure.Extensions;
