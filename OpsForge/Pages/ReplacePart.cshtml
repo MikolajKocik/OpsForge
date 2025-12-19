@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int}"
 @model OpsForge.Web.Pages.ReplacePartModel
 @{
 }
@@ -14,33 +14,19 @@
     <input type="hidden" asp-for="MachineId" />
 
     <div class="mb-3">
-        <label class="form-label">Choose the part to replace:</label>
-        <select asp-for="@this.Model.SelectedPartType" class="form-select">
-            @foreach (var part in this.Model.PartTypeOptions)
-            {
-                <option value="@part">@part</option>
-            }
+        <label>Choose machine's slot:</label>
+        <select asp-for="SelectedPartType" asp-items="Model.AvailablePartTypes" class="form-control">
+            <option value="">-- Choose the part --</option>
         </select>
-        <span asp-validation-for="@this.Model.SelectedPartType" class="text-danger"></span>
-    </div>
-
-    <hr />
-
-    <h5>New part data:</h5>
-
-    <div class="mb-3">
-        <label class="form-label">Brand:</label>
-        <input asp-for="@this.Model.Input.Brand" class="form-control" placeholder="etc. Siemens" />
+        <span asp-validation-for="SelectedPartType" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Model:</label>
-        <input asp-for="@this.Model.Input.Model" class="form-control" placeholder=". S7-1200" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Serial number:</label>
-        <input asp-for="@this.Model.Input.SerialNumber" class="form-control" />
+        <label>Choose the part from inventory:</label>
+        <select asp-for="SelectedInventoryPartId" asp-items="Model.InventoryPartOptions" class="form-control">
+            <option value="">-- Select part from inventory --</option>
+        </select>
+        <span asp-validation-for="SelectedInventoryPartId" class="text-danger"></span>
     </div>
 
     <div class="mt-4">
