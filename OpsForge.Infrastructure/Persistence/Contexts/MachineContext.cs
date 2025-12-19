@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OpsForge.Domain.Entities;
-using OpsForge.Domain.Entities.AggregateMachine.Machines;
 using OpsForge.Domain.SeedWork.Interfaces;
 using OpsForge.Infrastructure.Persistence.Annotations;
 using OpsForge.Infrastructure.Persistence.Contexts.Extensions;
@@ -31,9 +30,9 @@ public sealed class MachineContext : DbContext, IUnitOfWork
 
         modelBuilder.Entity<Machine>().ToTable(ContextUtility.MachineTable);
 
-        modelBuilder.AutomateSparePartsShadowProperty();
-
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        modelBuilder.AutomateSparePartsShadowProperty();
     }
 
     /// <summary>
