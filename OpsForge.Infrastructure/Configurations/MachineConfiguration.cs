@@ -40,9 +40,10 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
                     .First(li => li.Id == id))
             .IsRequired();
 
-        // value objects
         builder.OwnsOne(m => m.Inventory, inventoryBuilder =>
         {
+            inventoryBuilder.ToJson();
+
             inventoryBuilder.OwnsMany(i => i.Parts, partBuilder =>
             {
                 partBuilder.ToJson();
