@@ -1,10 +1,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OpsForge.Application.CQRS.Commands.ReplaceSparePart;
 using OpsForge.Application.Interfaces.Repositories;
 using OpsForge.Domain.Entities;
 using OpsForge.Domain.Entities.AggregateMachine.Machines;
+using OpsForge.Domain.SeedWork;
+using OpsForge.Web.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace OpsForge.Web.Pages
 {
@@ -23,13 +27,14 @@ namespace OpsForge.Web.Pages
         public int MachineId { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Please, choose the part to replace")]
         public string SelectedPartType { get; set; }
 
-        [BindProperty] 
-        public SparePart NewPart { get; set; }
+        [BindProperty]
+        public List<SelectListItem> PartTypeOptions { get; set; } = new(); 
 
         [BindProperty]
-        public List<string> AvailablePartTypes { get; set; } = new();
+        public ReplacePartInput Input { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -38,10 +43,14 @@ namespace OpsForge.Web.Pages
 
             if (machine is not null)
             {
-                AvailablePartTypes = machine.GetType()
+                PartTypeOptions = machine.GetType()
                   .GetProperties()
                   .Where(p => p.PropertyType == typeof(SparePart))
-                  .Select(p => p.Name)
+                  .Select(p => new SelectListItem
+                  {
+                      Text = p.Name,
+                      Value = p.Name
+                  })
                   .ToList();
             }
 
@@ -50,11 +59,15 @@ namespace OpsForge.Web.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var result = await mediator.Send(new ReplacePartCommand(
+            if (!ModelState.IsValid) return Page();
+
+            var newPart = new SparePart(this.Input.Brand, this.Input.Model, this.Input.SerialNumber);
+
+            Result? result = await mediator.Send(new ReplacePartCommand(
                     this.MachineId,
                     this.SelectedPartType,
-                    this.NewPart));
-        
+                    newPart));
+
             if (result.IsFailure)
             {
                 ModelState.AddModelError("", result.Error);

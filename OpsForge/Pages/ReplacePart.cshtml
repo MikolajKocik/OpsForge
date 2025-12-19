@@ -16,7 +16,7 @@
     <div class="mb-3">
         <label class="form-label">Choose the part to replace:</label>
         <select asp-for="@this.Model.SelectedPartType" class="form-select">
-            @foreach (var part in this.Model.AvailablePartTypes)
+            @foreach (var part in this.Model.PartTypeOptions)
             {
                 <option value="@part">@part</option>
             }
@@ -30,17 +30,17 @@
 
     <div class="mb-3">
         <label class="form-label">Brand:</label>
-        <input asp-for="@this.Model.NewPart.Brand" class="form-control" placeholder="etc. Siemens" />
+        <input asp-for="@this.Model.Input.Brand" class="form-control" placeholder="etc. Siemens" />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Model:</label>
-        <input asp-for="@this.Model.NewPart.Model" class="form-control" placeholder=". S7-1200" />
+        <input asp-for="@this.Model.Input.Model" class="form-control" placeholder=". S7-1200" />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Serial number:</label>
-        <input asp-for="@this.Model.NewPart.SerialNumber" class="form-control" />
+        <input asp-for="@this.Model.Input.SerialNumber" class="form-control" />
     </div>
 
     <div class="mt-4">

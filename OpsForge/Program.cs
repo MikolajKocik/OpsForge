@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using OpsForge.Application.CQRS;
 using OpsForge.Infrastructure.Extensions;
+using OpsForge.Infrastructure.Persistence.Contexts;
+using OpsForge.Infrastructure.Persistence.InitialData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,4 +36,21 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllers();
 
-app.Run();
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<MachineContext>();
+        await context.Database.MigrateAsync(); 
+
+        await DbInitializer.SeedAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
+await app.RunAsync();
