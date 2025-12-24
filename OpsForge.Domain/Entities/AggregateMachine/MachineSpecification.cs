@@ -34,6 +34,11 @@ public sealed class MachineSpecification : ValueObject
 
     private MachineSpecification() { }
 
+    public MachineSpecification()
+    {
+        
+    }
+
     public MachineSpecification(
         string model,
         string manufacturer,

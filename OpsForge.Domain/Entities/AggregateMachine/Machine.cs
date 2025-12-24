@@ -21,7 +21,8 @@ public class Machine : BaseEntity, IAggregateRoot
     private readonly List<MaintenanceOrder> _maintenances = new();
     public IReadOnlyCollection<MaintenanceOrder> Maintenances => 
         this._maintenances.AsReadOnly();
-    public Machine() { }
+
+    protected Machine() { }
 
     public Machine(string name, Line productionLine, MachineSpecification specification)
     {

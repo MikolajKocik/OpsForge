@@ -17,7 +17,7 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Machines
         public SparePart? PLC { get; private set; }
         public SparePart? HMI { get; private set; }
 
-        public AutomaticMeldingMachine() { }
+        public AutomaticMeldingMachine() : base() { }
 
         public AutomaticMeldingMachine(
             string name,

@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using OpsForge.Application.CQRS;
 using OpsForge.Infrastructure.Extensions;
 using OpsForge.Infrastructure.Persistence.Contexts;
 using OpsForge.Infrastructure.Persistence.InitialData;
@@ -13,7 +11,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
 builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+{
+    cfg.RegisterServicesFromAssembly(typeof(ReplacePartCommand).Assembly);
+});
 
 var app = builder.Build();
 

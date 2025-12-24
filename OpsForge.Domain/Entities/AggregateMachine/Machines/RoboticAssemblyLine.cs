@@ -10,7 +10,7 @@ public sealed class RoboticAssemblyLine : Machine
     public SparePart? PneumaticGrippers { get; private set; }
     public SparePart? PLCHMIController { get; private set; }
 
-    public RoboticAssemblyLine() { }
+    public RoboticAssemblyLine() : base() { }
 
     public RoboticAssemblyLine(
         Line productionLine,

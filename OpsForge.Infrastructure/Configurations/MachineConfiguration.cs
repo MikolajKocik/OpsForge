@@ -76,16 +76,33 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
             .HasForeignKey("MachineId")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(m => m.Maintenances)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(m => m.Maintenances)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        // machine types (childs)
-        builder.HasDiscriminator<string>("MachineType")
-            .HasValue<Machine>("Base")
-            .HasValue<AutomaticMeldingMachine>("Automatic")
-            .HasValue<CncMillingMachine>("CNC")
-            .HasValue<HydraulicPress>("Hydraulic")
-            .HasValue<InjectionMeldingMachine>("Injection")
-            .HasValue<RoboticAssemblyLine>("Robotic");
+            // value object private fields accessibility
+            builder.Navigation(m => m.Inventory.CncParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.RoboticParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.AutomaticParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.HydraulicParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            //
+            builder.Navigation(m => m.Inventory.InjectionParts)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // machine types (childs)
+            builder.HasDiscriminator<string>("MachineType")
+                .HasValue<Machine>("Base")
+                .HasValue<AutomaticMeldingMachine>("Automatic")
+                .HasValue<CncMillingMachine>("CNC")
+                .HasValue<HydraulicPress>("Hydraulic")
+                .HasValue<InjectionMeldingMachine>("Injection")
+                .HasValue<RoboticAssemblyLine>("Robotic");
+        }
     }
 }
