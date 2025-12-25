@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using OpsForge.Application.CQRS.Commands.ReplaceSparePart;
 using OpsForge.Infrastructure.Extensions;
 using OpsForge.Infrastructure.Persistence.Contexts;
 using OpsForge.Infrastructure.Persistence.InitialData;

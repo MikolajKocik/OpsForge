@@ -44,11 +44,11 @@ internal sealed class MaintenanceOrderConfiguration : IEntityTypeConfiguration<M
                 id => Enumeration.GetAll<MaintenanceType>()
                     .First(st => st.Id == id))
             .IsRequired();
+            schBuilder.Property(i => i.MaintenanceInterval).IsRequired();
+            schBuilder.Property(i => i.LastMaintenanceDate).IsRequired();
 
-        builder.Property(mo => mo.Schedule.MaintenanceInterval).IsRequired();
-        builder.Property(mo => mo.Schedule.LastMaintenanceDate).IsRequired();
-
-        builder.Property(mo => mo.Schedule.Notes).HasMaxLength(300);
+            schBuilder.Property(i => i.Notes).HasMaxLength(300);
+        });
 
         builder.Navigation(mo => mo.Statuses)
             .UsePropertyAccessMode(PropertyAccessMode.Field);

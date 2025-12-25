@@ -25,11 +25,11 @@ public class ReplacePartModel : PageModel
     public int MachineId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please, choose the part to replace")]
+    [Required(ErrorMessage = "Please select a part from the warehouse for assembly")]
     public string SelectedInventoryPartId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Wybierz podzespó³ do wymiany")]
+    [Required(ErrorMessage = "Choose the spare part to change")]
     public string SelectedPartType { get; set; }
 
     public List<SelectListItem> AvailablePartTypes { get; set; } = new();
@@ -37,6 +37,11 @@ public class ReplacePartModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
+        if (id == 0)
+        {
+            return RedirectToPage("/Index");
+        }
+
         var machine = await repository.GetMachineById(id, default); 
         if (machine is null) return NotFound();
 
@@ -48,25 +53,30 @@ public class ReplacePartModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-        {
-            await ReloadData();
-            return Page();
-        }
-
         Machine? machine = await this.repository.GetMachineById(this.MachineId, default);
         if (machine is null) return NotFound();
 
-        if (!int.TryParse(SelectedInventoryPartId, out int partIndex) ||
-            partIndex >= machine.Inventory.Parts.Count)
+        await LoadPageData(machine);
+
+        var isPartTypeValid = this.AvailablePartTypes.Any(p => p.Value == this.SelectedPartType);
+        if (!isPartTypeValid)
         {
-            ModelState.AddModelError("", "Invalid choice from inventory");
-            await LoadPageData(machine);
+            ModelState.AddModelError(nameof(SelectedPartType), "Invalid spare part");
+        }
+
+        if (!ModelState.IsValid)
+        {
             return Page();
         }
 
-        SparePart? partFromInventory = machine?.Inventory.Parts.ElementAt(partIndex);
-        if (partFromInventory is null) return NotFound();
+        SparePart? partFromInventory = machine.Inventory.Parts
+           .FirstOrDefault(p => p.SerialNumber == SelectedInventoryPartId);
+
+        if (partFromInventory is null)
+        {
+            ModelState.AddModelError(nameof(SelectedInventoryPartId), "The selected spare part is invalid.");
+            return Page();
+        }
 
         var result = await this.mediator.Send(new ReplacePartCommand(
             this.MachineId,
@@ -75,8 +85,7 @@ public class ReplacePartModel : PageModel
 
         if (result.IsFailure)
         {
-            ModelState.AddModelError("", result.Error);
-            await LoadPageData(machine);
+            ModelState.AddModelError(string.Empty, result.Error);
             return Page();
         }
 
@@ -92,17 +101,11 @@ public class ReplacePartModel : PageModel
             .ToList();
 
         this.InventoryPartOptions = machine.Inventory.Parts
-            .Select((part, index) => new SelectListItem
+            .Select(part => new SelectListItem
             {
                 Text = $"{part.Brand} {part.Model} (SN: {part.SerialNumber ?? "N/A"})",
-                Value = index.ToString()
+                Value = part.SerialNumber
             })
             .ToList();
-    }
-
-    private async Task ReloadData()
-    {
-        var machine = await repository.GetMachineById(this.MachineId, default);
-        if (machine is not null) await LoadPageData(machine);
     }
 }

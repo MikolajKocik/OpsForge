@@ -42,15 +42,11 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
 
         builder.OwnsOne(m => m.Inventory, inventoryBuilder =>
         {
-            inventoryBuilder.ToJson();
-
-            inventoryBuilder.OwnsMany(i => i.Parts, partBuilder =>
-            {
-                partBuilder.ToJson();
-                partBuilder.Property(p => p.SerialNumber);
-                partBuilder.Property(p => p.Model).IsRequired();
-                partBuilder.Property(p => p.Brand).IsRequired();
-            });
+            inventoryBuilder.Property(i => i.CncParts);
+            inventoryBuilder.Property(i => i.AutomaticParts);
+            inventoryBuilder.Property(i => i.RoboticParts);
+            inventoryBuilder.Property(i => i.HydraulicParts);
+            inventoryBuilder.Property(i => i.InjectionParts);
         });
 
         builder.OwnsOne(m => m.Specification, specBuilder =>
@@ -76,33 +72,16 @@ internal sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
             .HasForeignKey("MachineId")
             .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Navigation(m => m.Maintenances)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(m => m.Maintenances)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-            // value object private fields accessibility
-            builder.Navigation(m => m.Inventory.CncParts)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-            //
-            builder.Navigation(m => m.Inventory.RoboticParts)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-            //
-            builder.Navigation(m => m.Inventory.AutomaticParts)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-            //
-            builder.Navigation(m => m.Inventory.HydraulicParts)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-            //
-            builder.Navigation(m => m.Inventory.InjectionParts)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-            // machine types (childs)
-            builder.HasDiscriminator<string>("MachineType")
-                .HasValue<Machine>("Base")
-                .HasValue<AutomaticMeldingMachine>("Automatic")
-                .HasValue<CncMillingMachine>("CNC")
-                .HasValue<HydraulicPress>("Hydraulic")
-                .HasValue<InjectionMeldingMachine>("Injection")
-                .HasValue<RoboticAssemblyLine>("Robotic");
-        }
+        // machine types (childs)
+        builder.HasDiscriminator<string>("MachineType")
+            .HasValue<Machine>("Base")
+            .HasValue<AutomaticMeldingMachine>("Automatic")
+            .HasValue<CncMillingMachine>("CNC")
+            .HasValue<HydraulicPress>("Hydraulic")
+            .HasValue<InjectionMeldingMachine>("Injection")
+            .HasValue<RoboticAssemblyLine>("Robotic");
     }
 }

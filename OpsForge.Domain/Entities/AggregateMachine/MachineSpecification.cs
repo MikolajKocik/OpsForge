@@ -31,13 +31,7 @@ public sealed class MachineSpecification : ValueObject
             this._dimensions_Height
         );
 
-
-    private MachineSpecification() { }
-
-    public MachineSpecification()
-    {
-        
-    }
+    public MachineSpecification() { }
 
     public MachineSpecification(
         string model,

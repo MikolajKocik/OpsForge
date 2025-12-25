@@ -1,6 +1,5 @@
 ﻿using OpsForge.Domain.Entities.AggregateMachine.Machines;
 using OpsForge.Domain.SeedWork;
-using System.Collections.Generic;
 
 namespace OpsForge.Domain.Entities.AggregateMachine.Inventory;
 
@@ -9,55 +8,29 @@ namespace OpsForge.Domain.Entities.AggregateMachine.Inventory;
 /// </summary>
 public sealed class Inventory : ValueObject
 {
-    /// <summary>
-    /// List of automatic parts
-    /// </summary>
-    private readonly List<AutomaticMeldingMachine> _automaticParts = new();
-    public IReadOnlyCollection<AutomaticMeldingMachine> AutomaticParts => _automaticParts.AsReadOnly();
+    public List<CncMillingMachine> CncParts { get; private set; } = new();
+    public List<RoboticAssemblyLine> RoboticParts { get; private set; } = new();
+    public List<AutomaticMeldingMachine> AutomaticParts { get; private set; } = new();
+    public List<HydraulicPress> HydraulicParts { get; private set; } = new();
+    public List<InjectionMeldingMachine> InjectionParts { get; private set; } = new();
 
-    /// <summary>
-    /// List of cnc parts
-    /// </summary>
-    private readonly List<CncMillingMachine> _cncParts = new();
-    public IReadOnlyCollection<CncMillingMachine> CncParts => _cncParts.AsReadOnly();
+    private List<SparePart?> _parts =>
+           (List<SparePart?>)this.CncParts.SelectMany(m => new[] { m.MainSpindle, m.BallScrews, m.ToolMagazine, m.LinearGuides, m.CoolantPump })
+        .Concat(this.RoboticParts
+            .SelectMany(m => new[] { m.RobotArmJoint, m.ConveyorBelt, m.VisionSensors, m.PneumaticGrippers, m.PLCHMIController }))
+        .Concat(this.AutomaticParts
+            .SelectMany(m => new[] { m.ControlUnit, m.ConveyorSystem, m.Sensors, m.Actuators, m.SafetyGuards, m.WeldingHead, m.CoolingSystem, m.ToolChanger, m.PLC, m.HMI }))
+        .Concat(this.HydraulicParts
+            .SelectMany(m => new[] { m.HydraulicPump, m.HydraulicCylinder, m.HydraulicOilTank, m.ProportionalValves }))
+        .Concat(this.InjectionParts
+            .SelectMany(m => new[] { m.PowerSourceWelder, m.WeldingTorch, m.WireFeeder, m.FumeExtractionSystem, m.PositionerTable, m.InjectionUnit, m.HydraulicPump, m.InjectionMold, m.ClampingUnit, m.MaterialHopperDryer })
+    );
 
-    /// <summary>
-    /// List of hydraulic parts
-    /// </summary>
-    private readonly List<HydraulicPress> _hydraulicParts = new();
-    public IReadOnlyCollection<HydraulicPress> HydraulicParts => _hydraulicParts.AsReadOnly();
+    public IEnumerable<SparePart?> Parts => this._parts;
 
-    /// <summary>
-    /// List of injection parts
-    /// </summary>
-    public readonly List<InjectionMeldingMachine> _injectionParts = new();
-    public IReadOnlyCollection<InjectionMeldingMachine> InjectionParts => _injectionParts.AsReadOnly();
-
-    /// <summary>
-    /// List of robotic parts
-    /// </summary>
-    private readonly List<RoboticAssemblyLine> _roboticParts = new();
-    public IReadOnlyCollection<RoboticAssemblyLine> RoboticParts => _roboticParts.AsReadOnly();
-
-
-    // hashset for manipulating child machine parts
-    private readonly HashSet<object> _parts = new HashSet<object>();
-    public IReadOnlyCollection<object> Parts => this._parts;
-
-    public void RemovePart(params string[] parts)
+    public void AddPart(params SparePart?[] newPart)
     {
-        foreach (var part in parts)
-        {
-            if (this._parts.Contains(part))
-            {
-                this._parts.Remove(part);
-            }
-        }
-    }
-
-    public void AddPart(params SparePart[] parts)
-    {
-        foreach (var part in parts)
+        foreach(var part in newPart)
         {
             if (part is null) continue;
 
@@ -68,8 +41,25 @@ public sealed class Inventory : ValueObject
         }
     }
 
+    public void RemovePart(params SparePart?[] partToRemove)
+    {
+        foreach(var part in partToRemove)
+        {
+            if (part is null) continue; 
+
+            if(this._parts.Contains(part))
+            {
+                this._parts.Remove(part);
+            }
+        }
+    }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return this._parts;
+        yield return this.CncParts;
+        yield return this.AutomaticParts;
+        yield return this.RoboticParts;
+        yield return this.InjectionParts;
+        yield return this.HydraulicParts;
     }
 }
